@@ -1,0 +1,13 @@
+venv/ 
+__pycache__/ 
+*.pkl 
+.ipynb_checkpoints/ 
+# Hugging Face Space embedded repos
+hf_space/
+webapp/hf_space/
+
+# Common ignores (agar nahi hain to add karo)
+__pycache__/
+*.pyc
+.env
+*.log
