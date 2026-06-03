@@ -4,5 +4,5 @@ scikit-learn
 matplotlib
 seaborn
 imbalanced-learn
-gradio
 joblib
+streamlit
