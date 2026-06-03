@@ -1,6 +1,8 @@
 venv/ 
 __pycache__/ 
 *.pkl 
+*.pkl
+data/2024.xlsx
 .ipynb_checkpoints/ 
 # Hugging Face Space embedded repos
 hf_space/
