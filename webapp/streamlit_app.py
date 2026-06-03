@@ -1,6 +1,7 @@
 import streamlit as st
 import joblib
 import numpy as np
+import pandas as pd
 import os
 
 # ── Page Config ───────────────────────────────────────────────
@@ -10,9 +11,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# ── Load Models ───────────────────────────────────────────────
+# ── Paths ─────────────────────────────────────────────────────
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+WEBAPP_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# ── Load Models ───────────────────────────────────────────────
 @st.cache_resource
 def load_models():
     lr  = joblib.load(os.path.join(BASE_DIR, "models", "lr_model.pkl"))
@@ -23,10 +26,31 @@ def load_models():
 
 lr_model, rf_model, svm_model, scaler = load_models()
 
-# ── Header ────────────────────────────────────────────────────
+# ── Profile Header ────────────────────────────────────────────
+col_img, col_info = st.columns([1, 8])
+
+with col_img:
+    profile_path = os.path.join(WEBAPP_DIR, "profile.png")
+    if os.path.exists(profile_path):
+        st.image(profile_path, width=80)
+
+with col_info:
+    st.markdown("### Asif Nawaz")
+    st.markdown(
+        "🏥 Healthcare Data Scientist &nbsp;|&nbsp; "
+        "MPhil Economics &nbsp;|&nbsp; "
+        "Published Researcher &nbsp;|&nbsp; "
+        "13+ Years Clinical Experience"
+    )
+
+st.divider()
+
+# ── Main Title ────────────────────────────────────────────────
 st.title("🏥 High Cost Utilizer Prediction System")
-st.markdown("**Predicting High-Cost Lab Test Utilizers — University Hospital**")
-st.markdown("*MPhil Thesis | Arid Agriculture University Rawalpindi*")
+st.markdown(
+    "**Predicting High-Cost Lab Test Utilizers — "
+    "Arid Agriculture University Rawalpindi**"
+)
 st.divider()
 
 # ── Layout ────────────────────────────────────────────────────
@@ -68,10 +92,12 @@ with col1:
     moral_hazard = st.slider(
         "Moral Hazard Index (1=Low, 2=Medium, 3=High)", 1, 3, 1)
 
-    predict_btn = st.button("🔍 Predict", type="primary", 
-                            use_container_width=True)
+    predict_btn = st.button(
+        "🔍 Predict", 
+        type="primary",
+        use_container_width=True)
 
-# ── Prediction ────────────────────────────────────────────────
+# ── Prediction Output ─────────────────────────────────────────
 with col2:
     st.subheader("Prediction Output")
 
@@ -95,12 +121,13 @@ with col2:
         pred = model.predict(features_scaled)[0]
         prob = model.predict_proba(features_scaled)[0]
 
-        # ── Result ────────────────────────────────────────────
+        # ── Result Box ────────────────────────────────────────
         if pred == 1:
             st.error("⚠️ HIGH COST UTILIZER")
         else:
             st.success("✅ NORMAL UTILIZER")
 
+        # ── Confidence ────────────────────────────────────────
         st.metric("Confidence", f"{max(prob)*100:.1f}%")
 
         # ── Probability ───────────────────────────────────────
@@ -129,26 +156,30 @@ with col2:
                 monthly_trend, moral_hazard
             ]
         }
-
-        import pandas as pd
         st.dataframe(
             pd.DataFrame(summary),
             use_container_width=True,
             hide_index=True)
 
-        st.caption(f"Model: {model_choice} | "
-                   f"Best Model: Random Forest (ROC-AUC = 0.990)")
+        st.caption(
+            f"Model: {model_choice} | "
+            f"Best Model: Random Forest (ROC-AUC = 0.990)")
+
     else:
         st.info("👈 Fill in patient details and click Predict")
 
-        # ── Model Info ────────────────────────────────────────
+        # ── Model Performance Table ───────────────────────────
         st.subheader("Model Performance")
         perf_data = {
-            "Model": ["Random Forest", "Logistic Regression", "SVM"],
+            "Model": [
+                "Random Forest", 
+                "Logistic Regression", 
+                "SVM"],
             "Accuracy": ["94.82%", "94.96%", "93.98%"],
+            "Precision": ["86.81%", "83.23%", "82.89%"],
+            "Recall": ["87.41%", "93.71%", "88.11%"],
             "ROC-AUC": ["0.9901 🏆", "0.9826", "0.9669"]
         }
-        import pandas as pd
         st.dataframe(
             pd.DataFrame(perf_data),
             use_container_width=True,
@@ -157,6 +188,8 @@ with col2:
 # ── Footer ────────────────────────────────────────────────────
 st.divider()
 st.caption(
-    "Asif Nawaz | MPhil Economics | "
+    "👨‍💻 Asif Nawaz | MPhil Economics | "
     "Arid Agriculture University Rawalpindi | "
-    "Published: HEC Y-Category Journal")
+    "📄 Published: HEC Y-Category Journal | "
+    "🏥 13+ Years Healthcare Experience"
+)
