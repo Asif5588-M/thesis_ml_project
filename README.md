@@ -88,6 +88,8 @@ Joblib          — Model Saving
 
 ## 📁 Project Structure
 thesis_ml_project/
+## 📁 Project Structure
+thesis_ml_project/
 ├── data/
 │   ├── processed.csv
 │   └── final_ml_ready_health_data.csv
